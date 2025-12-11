@@ -1,0 +1,50 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: msa-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: msa-critical-alerts
+    rules:
+
+    # 🚨 MYSQL DOWN
+    - alert: MySQLDown
+      expr: kube_pod_status_ready{namespace="msa", pod=~"mysql.*", condition="true"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MySQL is DOWN"
+        description: "MySQL pod is not ready for more than 1 minute."
+
+    # 🚨 BACKEND API DOWN
+    - alert: BackendAPIDown
+      expr: kube_pod_status_ready{namespace="msa", pod=~"backend-api.*", condition="true"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Backend API is DOWN"
+        description: "Backend API pod is not ready."
+
+    # 🚨 POD CRASH LOOP
+    - alert: PodCrashLooping
+      expr: increase(kube_pod_container_status_restarts_total{namespace="msa"}[2m]) > 2
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod Crash Loop Detected"
+        description: "A pod in msa namespace is restarting repeatedly."
+
+    # 🚨 HIGH MEMORY USAGE (>80%)
+    - alert: HighMemoryUsage
+      expr: (container_memory_working_set_bytes{namespace="msa"} 
+            / container_spec_memory_limit_bytes{namespace="msa"}) > 0.80
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High Memory Usage"
+        description: "A container in msa namespace is using more than 80% memory."

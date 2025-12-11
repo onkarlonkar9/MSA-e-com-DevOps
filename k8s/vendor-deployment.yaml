@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vendor-ui
+  namespace: msa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vendor-ui
+  template:
+    metadata:
+      labels:
+        app: vendor-ui
+    spec:
+      containers:
+      - name: vendor-ui
+        image: onkarlonkar9/frontend-vendor:v2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        volumeMounts:
+        - name: nginx-conf
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: vendor-ui-config
+

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api
+  namespace: msa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: backend-api
+        image: onkarlonkar9/backend-api:v1
+        env:
+        - name: PORT
+          value: "8000"
+        - name: DB_HOST
+          value: "mysql"
+        - name: DB_USERNAME
+          value: "shop"
+        - name: DB_PASSWORD
+          value: "pass123"
+        - name: DB_NAME
+          value: "shoppingdb"
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+

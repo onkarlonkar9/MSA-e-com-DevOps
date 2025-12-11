@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vendor-ui
+  namespace: msa
+spec:
+  selector:
+    app: vendor-ui
+  ports:
+  - port: 80
+    targetPort: 80
