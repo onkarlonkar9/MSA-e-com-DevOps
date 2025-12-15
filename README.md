@@ -2,6 +2,8 @@
 
 Full-stack microservices e-commerce platform with separate frontends for customers and vendors, plus a backend and DevOps setup.
 
+![](./docs/microservices-shopping-app.png)
+
 Table of Contents
 
 Overview
